@@ -16,12 +16,10 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "strict": true
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-  ],
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
@@ -29,5 +27,5 @@
     "dist",
     "coverage",
     "eslint.config.mjs"
-  ],
+  ]
 }
