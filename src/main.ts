@@ -1,8 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
+import { Env } from 'config/env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3333);
+
+  const logger = new Logger('Main');
+  const configService = app.get<ConfigService<Env>>(ConfigService);
+
+  const NODE_ENV = configService.get('NODE_ENV');
+  const URL = configService.get('URL');
+  const PORT = configService.get('PORT');
+
+  await app.listen(PORT);
+
+  logger.log(`-------- Environment: ${NODE_ENV} -------- `);
+  logger.log(`Server is running on ${URL}:${PORT}`);
+  logger.log('------------------------------------------');
 }
 bootstrap();
