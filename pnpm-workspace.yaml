@@ -1,3 +1,8 @@
 ignoredBuiltDependencies:
   - '@prisma/client'
   - dtrace-provider
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@swc/core'
+  - esbuild
