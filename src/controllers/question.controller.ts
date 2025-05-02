@@ -7,19 +7,17 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { GetUser } from 'src/auth/getUser.decorator';
-import { JwtAuthGuard } from 'src/auth/jwt-aut.guard';
-import { UserPayload } from 'src/auth/jwt.strategy';
+
+import { GetUser, JwtAuthGuard, UserPayload } from '@/auth';
 import {
   bodyValidationPipe,
   CreateQuestionBodySchema,
-} from 'src/dto/question/create-question.dto';
-import {
   GetQuestionQuerySchema,
   getQuestionQueryValidationPipe,
   GetQuestionResponseSchema,
-} from 'src/dto/question/get-question.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+} from '@/dto';
+import { PrismaService } from '@/prisma/prisma.service';
+import { createSlug } from '@/utils/createSlug';
 
 @Controller('questions')
 @UseGuards(JwtAuthGuard)
@@ -61,11 +59,7 @@ export class QuestionController {
       data: {
         title,
         content,
-        slug: `${title
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')}`,
+        slug: createSlug(title),
         authorId: user.sub,
       },
     });

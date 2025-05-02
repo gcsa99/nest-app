@@ -2,23 +2,28 @@ import {
   Body,
   ConflictException,
   Controller,
+  Get,
   HttpCode,
   Logger,
   LoggerService,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { hash } from 'bcryptjs';
-import { CreateAccountBodySchema, createAccountValidationPipe } from 'src/dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+
+import { CreateAccountBodySchema, createAccountValidationPipe } from '@/dto';
+import { PrismaService } from '@/prisma/prisma.service';
+import { JwtAuthGuard } from '@/auth';
 
 @Controller('accounts')
+@UseGuards(JwtAuthGuard)
 export class AccountController {
   constructor(private readonly prisma: PrismaService) {}
   logger: LoggerService = new Logger(this.constructor.name);
 
   @Post()
   @HttpCode(201)
-  async handle(
+  async create(
     @Body(createAccountValidationPipe)
     data: CreateAccountBodySchema,
   ) {
@@ -40,5 +45,13 @@ export class AccountController {
     });
     this.logger.log(`User created with ID: ${createdUser.id}`);
     return createdUser;
+  }
+  @Get()
+  @HttpCode(200)
+  async getAll() {
+    this.logger.log('Fetching all accounts');
+    const users = await this.prisma.user.findMany();
+    this.logger.log(`Fetched ${users.length} accounts`);
+    return users;
   }
 }

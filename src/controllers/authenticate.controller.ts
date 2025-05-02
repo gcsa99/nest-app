@@ -1,11 +1,12 @@
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
+
 import {
   authenticateBodySchema,
   authenticateBodyValidationPipe,
-} from 'src/dto/authenticate/authenticate.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+} from '@/dto/authenticate/authenticate.dto';
+import { PrismaService } from '@/prisma/prisma.service';
 
 @Controller('sessions')
 export class AuthenticateController {

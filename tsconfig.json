@@ -1,12 +1,14 @@
 {
+  "extends": "@tsconfig/node23/tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "lib": ["ES2023"],
+    "module": "node16",
+    "target": "ES2023",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -17,15 +19,19 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@test/*": ["./test/*"],
+      "@config/*": ["./config/*"]
+    },
+    "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    ".husky",
-    "dist",
-    "coverage",
-    "eslint.config.mjs"
-  ]
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "vitest.config.mts",
+    "vitest.config.e2e.mts"
+  ],
+  "exclude": ["node_modules", ".husky", "dist", "coverage", "eslint.config.mjs"]
 }

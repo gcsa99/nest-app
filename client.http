@@ -38,3 +38,9 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/questions
 Content-Type: application/json
 Authorization: Bearer {{token}}
+###
+
+# @name List_Questions_Paginated
+GET {{baseUrl}}/questions?page=1&limit=1&sort=desc&orderBy=createdAt
+Content-Type: application/json
+Authorization: Bearer {{token}}
