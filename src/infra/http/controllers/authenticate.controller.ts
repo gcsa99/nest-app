@@ -6,7 +6,7 @@ import {
   authenticateBodySchema,
   authenticateBodyValidationPipe,
 } from '@/dto/authenticate/authenticate.dto';
-import { PrismaService } from '@/prisma/prisma.service';
+import { PrismaService } from '@/infra/database/prisma/prisma.service';
 
 @Controller('sessions')
 export class AuthenticateController {

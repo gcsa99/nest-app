@@ -16,8 +16,8 @@ async function bootstrap() {
   const PORT = configService.get('PORT');
 
   await app.listen(PORT);
-
-  logger.log(`-------- Environment: ${NODE_ENV} -------- `);
+  logger.log('------------------------------------------');
+  logger.log(`Environment: ${NODE_ENV}  `);
   logger.log(`Server is running on ${URL}:${PORT}`);
   logger.log('------------------------------------------');
 }

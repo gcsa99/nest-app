@@ -12,8 +12,8 @@ import {
 import { hash } from 'bcryptjs';
 
 import { CreateAccountBodySchema, createAccountValidationPipe } from '@/dto';
-import { PrismaService } from '@/prisma/prisma.service';
-import { JwtAuthGuard } from '@/auth';
+import { PrismaService } from '@/infra/database/prisma/prisma.service';
+import { JwtAuthGuard } from '@/infra/auth';
 
 @Controller('accounts')
 @UseGuards(JwtAuthGuard)

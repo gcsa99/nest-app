@@ -22,6 +22,7 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@infra/*": ["./src/infra/*"],
       "@test/*": ["./test/*"],
       "@config/*": ["./config/*"]
     },

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ZodValidationPipe } from '@/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation.pipe';
 
 export const getQuestionQuerySchema = z.object({
   id: z.string().uuid().optional(),
@@ -24,6 +24,7 @@ export const getQuestionResponseSchema = z.object({
   content: z.string(),
   slug: z.string(),
   authorId: z.string().uuid(),
+  bestAnswerId: z.string().uuid().nullable().optional(),
   createdAt: z.date(),
   updatedAt: z.date().nullable(),
 });

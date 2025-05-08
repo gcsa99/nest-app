@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ZodValidationPipe } from '@/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation.pipe';
 
 export const createAccountBodySchema = z.object({
   name: z.string(),
