@@ -46,9 +46,9 @@ suite('Account (E2E)', () => {
         .get('/accounts')
         .set('Authorization', `Bearer ${accessToken}`);
       expect(response.statusCode).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body.length).toBeGreaterThan(0);
-      expect(response.body[0].name).toBe(createAccount.name);
+      expect(response.body.users).toBeInstanceOf(Array);
+      expect(response.body.users.length).toBeGreaterThan(0);
+      expect(response.body.users[0].name).toBe(createAccount.name);
     });
     it('should return accounts', async () => {
       const response = await request(app.getHttpServer())
@@ -62,7 +62,7 @@ suite('Account (E2E)', () => {
       });
       expect(findedAccount).toBeTruthy();
       expect(findedAccount).toBeDefined();
-      expect(response.body[0].name).toBe(createAccount.name);
+      expect(response.body.users[0].name).toBe(createAccount.name);
     });
   });
 });

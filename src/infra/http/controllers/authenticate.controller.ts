@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
 
@@ -7,13 +13,13 @@ import {
   authenticateBodyValidationPipe,
 } from '@/dto/authenticate/authenticate.dto';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
+import { AuthenticateUserUseCase } from '@/domain/account/application/use-cases/authenticate-user';
+import { WrongCredentialsError } from '@/domain/account/application/use-cases/error/wrong-credentials-error';
+import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Controller('sessions')
 export class AuthenticateController {
-  constructor(
-    private readonly jwt: JwtService,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly authenticateUser: AuthenticateUserUseCase) {}
 
   @Post()
   async handle(
@@ -21,23 +27,18 @@ export class AuthenticateController {
     body: authenticateBodySchema,
   ) {
     const { email, password } = body;
-
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
+    const result = await this.authenticateUser.execute({
+      email,
+      password,
     });
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+    if (result.isLeft()) {
+      const error = result.value;
+      if (error.constructor == WrongCredentialsError) {
+        throw new UnauthorizedException(error.message);
+      }
+      throw new BadRequestException(error.message);
     }
-
-    const isPasswordValid = await compare(password, user.password);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-    const accessToken = this.jwt.sign({ sub: user.id });
-
-    return { access_token: accessToken };
+    const { accessToken } = result.value;
+    return { accessToken };
   }
 }

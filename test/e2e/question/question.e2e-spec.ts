@@ -44,14 +44,16 @@ suite('Question (E2E)', () => {
       expect(findedQuestion?.content).toBe(createQuestion[0].content);
     });
   });
-  describe('Get Account', () => {
+  describe('Get Question', () => {
     test('[GET] /questions', async () => {
       const response = await request(app.getHttpServer())
         .get('/questions')
         .set('Authorization', `Bearer ${accessToken}`);
       expect(response.statusCode).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body[0].content).toBe(createQuestion[0].content);
+      expect(response.body.questions).toBeInstanceOf(Array);
+      expect(response.body.questions[0].content).toBe(
+        createQuestion[0].content,
+      );
     });
 
     it('should return questions', async () => {
@@ -75,7 +77,9 @@ suite('Question (E2E)', () => {
       expect(response.statusCode).toBe(200);
       const findedAccount = await prisma.question.findMany();
       expect(findedAccount).toBeTruthy();
-      expect(response.body[2].content).toBe(createQuestion[2].content);
+      expect(response.body.questions[2].content).toBe(
+        createQuestion[0].content,
+      );
     });
   });
 });

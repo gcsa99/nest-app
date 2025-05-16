@@ -1,7 +1,7 @@
-import { Encrypt } from '@/domain/account/application/cryptography/encrypt';
+import { Encrypter } from '@/domain/account/application/cryptography/encrypter';
 
-export class FakeEncrypt implements Encrypt {
-  async sign(payload: Record<string, unknown>): Promise<string> {
+export class FakeEncrypt implements Encrypter {
+  async encrypt(payload: Record<string, unknown>): Promise<string> {
     return JSON.stringify(payload);
   }
 }

@@ -9,6 +9,8 @@ import {
   PrismaQuestionsRepository,
 } from './prisma/repositories';
 import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository';
+import { UsersRepository } from '@/domain/forum/application/repositories/users-repository';
+import { PrismaUsersRepository } from './prisma/repositories/prisma-users-repository';
 
 const repositories = [
   PrismaQuestionsAttachmentsRepository,
@@ -22,8 +24,16 @@ const repositories = [
   providers: [
     PrismaService,
     { provide: QuestionsRepository, useClass: PrismaQuestionsRepository },
+
+    { provide: UsersRepository, useClass: PrismaUsersRepository },
+
     ...repositories,
   ],
-  exports: [PrismaService, QuestionsRepository, ...repositories],
+  exports: [
+    PrismaService,
+    QuestionsRepository,
+    UsersRepository,
+    ...repositories,
+  ],
 })
 export class DatabaseModule {}

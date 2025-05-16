@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -14,11 +15,18 @@ import { hash } from 'bcryptjs';
 import { CreateAccountBodySchema, createAccountValidationPipe } from '@/dto';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { JwtAuthGuard } from '@/infra/auth';
+import { CreateUserUseCase } from '@/domain/account/application/use-cases/create-user';
+import { FindUserUseCase } from '@/domain/account/application/use-cases/find-user';
+import { HttpUserPresenter } from '../presenters/http-user-presenter';
+import { UserAlreadyExistsError } from '@/domain/account/application/use-cases/error/user-already-exists-error';
 
 @Controller('accounts')
 @UseGuards(JwtAuthGuard)
 export class AccountController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly createUser: CreateUserUseCase,
+    private readonly findUser: FindUserUseCase,
+  ) {}
   logger: LoggerService = new Logger(this.constructor.name);
 
   @Post()
@@ -29,29 +37,40 @@ export class AccountController {
   ) {
     this.logger.log('Creating new account');
     const { name, email, password } = data;
-    const userWithEmail = await this.prisma.user.findUnique({
-      where: {
-        email: email,
-      },
+    const result = await this.createUser.execute({
+      name,
+      email,
+      password,
     });
-
-    if (userWithEmail) {
-      this.logger.error(`Email already exists: ${email}`);
-      throw new ConflictException('Email already exists');
+    if (result.isLeft()) {
+      const error = result.value;
+      if (error.constructor == UserAlreadyExistsError) {
+        this.logger.error('Error creating user', error.message);
+        throw new ConflictException(error.message);
+      }
+      this.logger.error('Error creating user', error.message);
+      throw new BadRequestException('Error creating user');
     }
-    const hashedPassword = await hash(password, 10);
-    const createdUser = await this.prisma.user.create({
-      data: { name, email, password: hashedPassword },
-    });
-    this.logger.log(`User created with ID: ${createdUser.id}`);
-    return createdUser;
+    return {
+      user: HttpUserPresenter.toHTTP(result.value.user),
+    };
   }
   @Get()
   @HttpCode(200)
   async getAll() {
     this.logger.log('Fetching all accounts');
-    const users = await this.prisma.user.findMany();
-    this.logger.log(`Fetched ${users.length} accounts`);
-    return users;
+    const result = await this.findUser.execute();
+    if (result.isLeft()) {
+      throw new BadRequestException('Error fetching users');
+    }
+    const users = result.value.user.map((user) => {
+      return HttpUserPresenter.toHTTP(user);
+    });
+    if (users.length === 0) {
+      this.logger.log('No users found');
+      return [];
+    }
+    this.logger.log(`Fetched ${users.length} users successfully`);
+    return { users };
   }
 }
