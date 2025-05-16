@@ -19,9 +19,9 @@ import { CreateUserUseCase } from '@/domain/account/application/use-cases/create
 import { FindUserUseCase } from '@/domain/account/application/use-cases/find-user';
 import { HttpUserPresenter } from '../presenters/http-user-presenter';
 import { UserAlreadyExistsError } from '@/domain/account/application/use-cases/error/user-already-exists-error';
+import { IsPublic } from '@/infra/auth/isPublic';
 
 @Controller('accounts')
-@UseGuards(JwtAuthGuard)
 export class AccountController {
   constructor(
     private readonly createUser: CreateUserUseCase,
@@ -31,6 +31,7 @@ export class AccountController {
 
   @Post()
   @HttpCode(201)
+  @IsPublic()
   async create(
     @Body(createAccountValidationPipe)
     data: CreateAccountBodySchema,

@@ -16,8 +16,10 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { AuthenticateUserUseCase } from '@/domain/account/application/use-cases/authenticate-user';
 import { WrongCredentialsError } from '@/domain/account/application/use-cases/error/wrong-credentials-error';
 import { errorContext } from 'rxjs/internal/util/errorContext';
+import { IsPublic } from '@/infra/auth/isPublic';
 
 @Controller('sessions')
+@IsPublic()
 export class AuthenticateController {
   constructor(private readonly authenticateUser: AuthenticateUserUseCase) {}
 

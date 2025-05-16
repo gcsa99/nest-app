@@ -20,7 +20,6 @@ import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-case
 import { HttpQuestionPresenter } from '../presenters/http-question-presenter';
 
 @Controller('questions')
-@UseGuards(JwtAuthGuard)
 export class QuestionController {
   constructor(
     private readonly createQuestion: CreateQuestionUseCase,
